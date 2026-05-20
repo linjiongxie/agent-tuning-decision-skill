@@ -14,7 +14,7 @@ cp -R agent-tuning-decision "${CODEX_HOME:-$HOME/.codex}/skills/"
 Install from GitHub after publishing this repo:
 
 ```bash
-$skill-installer install https://github.com/<owner>/agent-tuning-decision-skill/tree/main/agent-tuning-decision
+$skill-installer install https://github.com/linjiongxie/agent-tuning-decision-skill/tree/main/agent-tuning-decision
 ```
 
 Restart Codex after installing so the skill metadata is loaded.
