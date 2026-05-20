@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Tuning Decision"
+  short_description: "Root-cause Agent tuning decisions"
+  default_prompt: "Use $agent-tuning-decision to choose and verify a prompt, orchestration, contract, or fallback strategy for an Agent behavior change."
