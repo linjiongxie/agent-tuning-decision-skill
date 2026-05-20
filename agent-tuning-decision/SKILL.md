@@ -11,6 +11,8 @@ Track the root cause to completion before debating fixes. Do not treat fallback 
 
 Prefer Prompt, workflow orchestration, and contract changes when the issue is about intent, sequencing, tool selection, event ownership, or Agent-visible reasoning. Use deterministic fallback logic only for safety, compatibility, latency protection, external uncertainty, or explicit user-visible recovery.
 
+When another debugging skill also applies, use it for evidence gathering and root-cause tracing, then use this skill for layer choice, recommended path, tradeoff framing, and backtest acceptance. General debugging decides what happened; this skill decides which Agent behavior layer should change.
+
 ## Root Cause Workflow
 
 1. Locate the behavior source.
