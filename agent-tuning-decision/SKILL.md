@@ -90,6 +90,23 @@ For non-trivial Agent tuning decisions, use this shape:
 - Tradeoff: short-term benefit, long-term benefit, risk, and switch condition.
 - Verification: include code checks, recent true-turn backtesting, and fixture or artificial cases only when needed.
 
+## Self-Evolution Protocol
+
+After a non-trivial Agent tuning session, decide whether this skill learned a reusable rule from the current triggered conversation. Do not scan unrelated historical sessions by default, and do not edit this skill automatically.
+
+If there is a strong candidate, add one `Evolution candidate` section after the main answer:
+
+- Trigger: the repeated decision bias, correction pattern, verification method, or skill coordination issue that appeared.
+- Rule: the reusable instruction that could improve this skill.
+- Evidence: concrete current-session behavior or user correction that supports the rule.
+- Boundary: when the rule should not apply.
+- Suggested location: where the rule belongs in this skill.
+- Minimal acceptance case: the smallest future prompt or scenario that should behave differently after adoption.
+
+Propose at most one candidate per response. If there is not enough evidence, write `No evolution candidate`.
+
+Only promote a candidate into `SKILL.md` when the user explicitly asks to adopt it, for example "补进去", "update skill", or "采纳这个候选". Before promotion, check that the rule generalizes beyond one project or one bug, does not include private project names, local paths, database table names, or internal endpoints, and does not weaken the existing root-cause-first, Prompt/orchestration/contract-preferred, fallback-limited, and recent-true-turn backtesting rules.
+
 ## Project-Specific Evidence
 
 In each project, inspect current repo sources before assuming exact tool names. Look for saved turns, event logs, replay fixtures, history diff tools, orchestration replay scripts, benchmark tools, or A/B eval harnesses. Treat saved history as historical evidence, not live recomputation. For recent behavior questions, start from the newest relevant true turns before falling back to fixtures or artificial cases.
@@ -97,6 +114,7 @@ In each project, inspect current repo sources before assuming exact tool names. 
 ## Avoid
 
 - Adding fallback before tracing provenance.
+- Auto-editing this skill from an evolution candidate without explicit user adoption.
 - Repeatedly debating options after the root-cause path is discoverable from evidence.
 - Treating historical replay rows as current Agent behavior.
 - Hiding Agent failures with backend or frontend defaults.
