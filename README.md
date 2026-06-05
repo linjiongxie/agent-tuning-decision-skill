@@ -57,6 +57,12 @@ The skill distinguishes deterministic replay/history diff from live rerun/A-B ev
 - Replay/history diff checks saved payloads, event contracts, rendering, and compatibility.
 - Live rerun/A-B eval checks whether a new Prompt or workflow actually changes Agent behavior.
 
+### Self-Evolution Protocol
+
+After a non-trivial tuning session, the skill may ask the coding agent to report one reusable evolution candidate: the trigger, rule, evidence, boundary, suggested location, and minimal acceptance case.
+
+The coding agent should not edit `SKILL.md` automatically. Promote a candidate only when the user explicitly adopts it, such as "update skill", "补进去", or "采纳这个候选".
+
 ### Expected Answer Shape
 
 When the skill is used on a non-trivial Agent tuning question, the coding agent should answer in this shape:
@@ -244,6 +250,12 @@ Agent 行为问题经常看起来很简单：某个回复选项默认出现、�
 
 - Replay/history diff 用于检查历史 payload、事件契约、渲染和兼容性。
 - Live rerun/A-B eval 用于检查新 Prompt 或新工作流是否真的改变 Agent 行为。
+
+### 自演化协议
+
+在非平凡的调优会话后，这个 skill 可以要求编码 agent 报告一个可复用的 evolution candidate：触发条件、规则、证据、边界、建议位置和最小验收场景。
+
+编码 agent 不应该自动编辑 `SKILL.md`。只有当用户明确采纳候选时，才把候选提升进 skill，例如用户说 "update skill"、"补进去" 或 "采纳这个候选"。
 
 ### 预期回答形态
 

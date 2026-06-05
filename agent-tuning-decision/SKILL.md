@@ -1,6 +1,6 @@
 ---
 name: agent-tuning-decision
-description: Use when deciding how to tune Agent behavior, prompts, tool/workflow orchestration, state recovery, event/UI ownership, replay behavior, or fallback logic. Trigger for Agent 调优, Prompt 修改, 工作流编排, 兜底逻辑, 根因追踪, 历史真实 turn 回测, or requests asking why one option is preferred and what the short-term and long-term tradeoffs are.
+description: "Use when deciding which layer should own Agent behavior changes: prompts, tool/workflow orchestration, runtime-specific evidence, state recovery, event/UI ownership, replay behavior, fallback logic, root-cause tradeoffs, evolution candidates, reusable tuning rules, or 采纳候选."
 ---
 
 # Agent Tuning Decision
@@ -110,6 +110,14 @@ Only promote a candidate into `SKILL.md` when the user explicitly asks to adopt 
 ## Project-Specific Evidence
 
 In each project, inspect current repo sources before assuming exact tool names. Look for saved turns, event logs, replay fixtures, history diff tools, orchestration replay scripts, benchmark tools, or A/B eval harnesses. Treat saved history as historical evidence, not live recomputation. For recent behavior questions, start from the newest relevant true turns before falling back to fixtures or artificial cases.
+
+## Runtime-Specific Evidence
+
+When a project uses an external agent runtime, workflow engine, or harness, identify whether the behavior is owned by the app framework, runtime, harness, or project glue before choosing Prompt, orchestration, contract, fallback, or UI changes.
+
+Use runtime docs only as evidence navigation, not as copied policy. For stateful graph runtimes, inspect graph state, checkpoints or persistence, interrupt/resume semantics, stream events, durability mode, and replay boundaries. For durable function or event runtimes, inspect trigger/event identity, step identity, memoized results, retries, waits/signals, concurrency, idempotency, and run history.
+
+Do not add vendor how-to details, API recipes, or project-specific runtime names to this public skill unless the same runtime-specific mistake repeats across projects.
 
 ## Avoid
 
