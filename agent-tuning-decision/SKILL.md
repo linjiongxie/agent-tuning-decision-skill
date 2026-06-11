@@ -1,6 +1,6 @@
 ---
 name: agent-tuning-decision
-description: "Use when deciding which layer should own Agent behavior changes: prompts, tool/workflow orchestration, runtime-specific evidence, state recovery, event/UI ownership, replay behavior, fallback logic, root-cause tradeoffs, evolution candidates, reusable tuning rules, or 采纳候选."
+description: "Use when deciding which layer should own Agent behavior changes: prompts, tool/workflow orchestration, framework-native ownership, runtime-specific evidence, repeated fix loops, state recovery, event/UI ownership, replay behavior, fallback logic, root-cause tradeoffs, evolution candidates, reusable tuning rules, or 采纳候选."
 ---
 
 # Agent Tuning Decision
@@ -16,7 +16,7 @@ When another debugging skill also applies, use it for evidence gathering and roo
 ## Root Cause Workflow
 
 1. Locate the behavior source.
-   - Check whether the behavior came from the current Agent turn, Prompt instruction, tool result, workflow branch, backend payload default, saved history/replay state, frontend fallback, or UI renderer.
+   - Check whether the behavior came from the current Agent turn, Prompt instruction, tool result, workflow branch, runtime state or run history, backend payload default, saved history/replay state, frontend fallback, or UI renderer.
    - If the user says "不是本轮 Agent 输出" or asks why something appeared by default, treat provenance as the main question.
 
 2. Compare past and present.
@@ -88,7 +88,7 @@ For non-trivial Agent tuning decisions, use this shape:
 - Recommended path: one recommended fix layer and action.
 - Why this layer: explain why Prompt, orchestration, contract, fallback, or UI is the right layer.
 - Tradeoff: short-term benefit, long-term benefit, risk, and switch condition.
-- Verification: include code checks, recent true-turn backtesting, and fixture or artificial cases only when needed.
+- Verification: include code checks, runtime-specific evidence when applicable, recent true-turn backtesting, and fixture or artificial cases only when needed.
 
 ## Self-Evolution Protocol
 
@@ -107,6 +107,19 @@ Propose at most one candidate per response. If there is not enough evidence, wri
 
 Only promote a candidate into `SKILL.md` when the user explicitly asks to adopt it, for example "补进去", "update skill", or "采纳这个候选". Before promotion, check that the rule generalizes beyond one project or one bug, does not include private project names, local paths, database table names, or internal endpoints, and does not weaken the existing root-cause-first, Prompt/orchestration/contract-preferred, fallback-limited, and recent-true-turn backtesting rules.
 
+## Review Loop Extraction Gate
+
+When the same behavior family goes through two or more `review -> fix -> eval -> new issue` cycles, stop before adding another Prompt rule, runtime guard, retry, or fallback. Classify the loop source first:
+
+- Missing contract: add or tighten an executable test, schema, fixture assertion, event contract, or tool payload/order check.
+- Wrong owner layer: move the fix to Prompt, orchestration, contract, state/replay, fallback, or UI according to the root cause instead of patching whichever layer failed last.
+- Model variance: avoid encoding one stochastic miss as permanent runtime behavior unless it protects an invariant or user-visible recovery path.
+- Eval gap: repair the scenario, instrumentation, baseline, or acceptance criteria before judging the behavior.
+
+Promote the loop result only when it leaves a durable contract, clearer ownership boundary, or reusable verification method. If it only adds another narrow retry or guard, report the guard-creep risk and name the evidence that would justify keeping it.
+
+When the baseline runtime or historical fixture has not changed, prefer candidate-only verification against frozen scenario contracts for repeated tuning loops. Rerun a slow or volatile baseline only when the baseline changed, the comparison itself is disputed, or the acceptance gate depends on a fresh live A/B result.
+
 ## Project-Specific Evidence
 
 In each project, inspect current repo sources before assuming exact tool names. Look for saved turns, event logs, replay fixtures, history diff tools, orchestration replay scripts, benchmark tools, or A/B eval harnesses. Treat saved history as historical evidence, not live recomputation. For recent behavior questions, start from the newest relevant true turns before falling back to fixtures or artificial cases.
@@ -114,6 +127,10 @@ In each project, inspect current repo sources before assuming exact tool names. 
 ## Runtime-Specific Evidence
 
 When a project uses an external agent runtime, workflow engine, or harness, identify whether the behavior is owned by the app framework, runtime, harness, or project glue before choosing Prompt, orchestration, contract, fallback, or UI changes.
+
+When the behavior may belong to an open-source framework's native responsibilities, check the official docs, Wiki, or source entry points for the installed or target version before designing project-level replacements. Look for native primitives for state, routing, checkpoints, interrupt/resume, streaming, retries, waits/signals, middleware, tool calls, durability, and replay. Prefer those primitives and keep project code as thin glue.
+
+Add project-level wrappers, guards, retries, or fallbacks only when framework primitives cannot meet the product contract, compatibility boundary, safety requirement, latency budget, observability need, or migration constraint. State that reason explicitly.
 
 Use runtime docs only as evidence navigation, not as copied policy. For stateful graph runtimes, inspect graph state, checkpoints or persistence, interrupt/resume semantics, stream events, durability mode, and replay boundaries. For durable function or event runtimes, inspect trigger/event identity, step identity, memoized results, retries, waits/signals, concurrency, idempotency, and run history.
 
